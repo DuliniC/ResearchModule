@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Eyebrow Shaping Way Recommondation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .upload-container {
+            margin-bottom: 20px;
+        }
+
+        .upload-button {
+            background-color: #4caf50;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .upload-button:hover {
+            background-color: #45a049;
+        }
+
+        .preview-image {
+            max-width: 100%;
+            max-height: 300px;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        .output-message, .makeover-message {
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Image Eyebrow Shaping Way Recommondation</h1>
+
+        <div class="upload-container">
+            <input type="file" id="upload" accept="image/*">
+            <br>
+            <button class="upload-button" onclick="processImage()">Upload</button>
+        </div>
+
+        <h2>Suggested Eyebrow Shape Preview:</h2>
+        <img id="preview" class="preview-image">
+        <br>
+
+        <h3>Suggestion Message:</h3>
+        <p id="output-message" class="output-message"></p>
+        <br>
+
+        <h3>Makeover Suggestion:</h3>
+        <p id="makeover-message" class="makeover-message"></p>
+    </div>
+
+
+    <script>
+        function processImage() {
+            var input = document.getElementById("upload");
+            var file = input.files[0];
+
+            var formData = new FormData();
+            formData.append("image", file);
+
+            fetch("http://localhost:5000/process-image", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    var image = new Image();
+                    image.src = "data:image/jpeg;base64," + data.processed_image;
+                    var previewImage = document.getElementById("preview");
+                    previewImage.src = image.src;
+
+                    var outputMessage = document.getElementById("output-message");
+                    outputMessage.textContent = data.message;
+
+                    var makeoverMessage = document.getElementById("makeover-message");
+                    makeoverMessage.textContent = data.makeover;
+                })
+                .catch(error => console.error(error));
+        }
+    </script>
+</body>
+
+</html>
